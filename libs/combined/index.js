@@ -18,6 +18,9 @@ module.exports.bchaddrSlp = require('bchaddrjs-slp')
 
 module.exports.bech32 = require('bech32')
 
+/* ed25519 */
+module.exports.ed25519 = require('ed25519-hd-key')
+
 /* biginteger */
 
 module.exports.BigInteger = require('javascript-biginteger')
@@ -77,10 +80,10 @@ catch (e) {
 /* stellar-util */
 
 let StellarBase = require('stellar-base');
-let edHd = require('ed25519-hd-key');
+
 module.exports.stellarUtil = {
     getKeypair: function (path, seed) {
-        const result = edHd.derivePath(path, seed);
+        const result = module.exports.ed25519.derivePath(path, seed);
         return StellarBase.Keypair.fromRawEd25519Seed(result.key);
     },
     dummyNetwork: {
