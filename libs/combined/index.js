@@ -74,13 +74,16 @@ catch (e) {
     console.warn(e);
 };
 
-/* stellar-util */
 
 let StellarBase = require('stellar-base');
-let edHd = require('ed25519-hd-key');
+
+/* ed25519 */
+module.exports.ed25519 = require('ed25519-hd-key')
+
+/* stellar-util */
 module.exports.stellarUtil = {
     getKeypair: function (path, seed) {
-        const result = edHd.derivePath(path, seed);
+        const result = module.exports.ed25519.derivePath(path, seed);
         return StellarBase.Keypair.fromRawEd25519Seed(result.key);
     },
     dummyNetwork: {
