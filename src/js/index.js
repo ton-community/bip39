@@ -1506,7 +1506,24 @@
                     var pubkeyBuffer = libs.ed25519.getPublicKey(privkeyBuffer, false);
                     pubkey = pubkeyBuffer.toString("hex");
 
-                    address = "(bouncable wallet)";
+                    const tonweb = new (libs.ton)();
+                    const wallet = tonweb.wallet.create({publicKey:pubkeyBuffer});
+                    wallet.getAddress().then((a) => {
+                        var row = $(addressRowTemplate.html());
+                        var addressCell = row.find(".address span");
+                        addressCell.text(a);
+                    });
+                }
+
+                // TON Legacy
+                if (networks[DOM.network.val()].name == "TON - The Open Network (non BIP39, TonHub)") {
+                    DOM.hardenedAddresses.prop("checked", false);
+                    indexText = ""
+                    privkey =  DOM.extendedPrivKey.val().toString("hex");
+                    pubkey =  DOM.extendedPubKey.val().toString("hex");
+
+                    // var pubkeyBuffer = libs.ed25519.getPublicKey(privkeyBuffer, false);
+                    // pubkey = pubkeyBuffer.toString("hex");
                 }
 
               //Groestlcoin Addresses are different
@@ -2299,6 +2316,14 @@
         {name:"select network"},
         {
             name: "TON - The Open Network",
+            onSelect: function() {
+                network = libs.bitcoin.networks.bitcoin;
+                setHdCoin(607);
+                DOM.hardenedAddresses.prop("checked", true);
+            },
+        },
+        {
+            name: "TON - The Open Network (non BIP39, TonHub)",
             onSelect: function() {
                 network = libs.bitcoin.networks.bitcoin;
                 setHdCoin(607);

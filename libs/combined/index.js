@@ -78,7 +78,10 @@ catch (e) {
 let StellarBase = require('stellar-base');
 
 /* ed25519 */
-module.exports.ed25519 = require('ed25519-hd-key')
+module.exports.ed25519 = require('ed25519-hd-key');
+
+/* TON */
+module.exports.ton = require('tonweb');
 
 /* stellar-util */
 module.exports.stellarUtil = {
