@@ -1511,19 +1511,35 @@
                     wallet.getAddress().then((a) => {
                         var row = $(addressRowTemplate.html());
                         var addressCell = row.find(".address span");
-                        addressCell.text(a);
+                        addressCell.text(a.toString(true));
                     });
                 }
 
                 // TON Legacy
                 if (networks[DOM.network.val()].name == "TON - The Open Network (non BIP39, TonHub)") {
-                    DOM.hardenedAddresses.prop("checked", false);
-                    indexText = ""
-                    privkey =  DOM.extendedPrivKey.val().toString("hex");
-                    pubkey =  DOM.extendedPubKey.val().toString("hex");
-
-                    // var pubkeyBuffer = libs.ed25519.getPublicKey(privkeyBuffer, false);
-                    // pubkey = pubkeyBuffer.toString("hex");
+                    
+                    const tonweb = new (libs.ton)();
+                    const tonwebMenmonic = window.TonWeb.mnemonic;
+                    
+                    tonwebMenmonic.mnemonicToKeyPair(phrase.value.split(" ")).then((keyPair) => {
+                        // const walletV3 = tonweb.wallet.create({publicKey: keyPair.publicKey});
+                        // walletV3.getAddress().then((a) => {
+                        //     let addr = a.toString(true, true, true);
+                        //     console.log("Address V3", addr);
+                        //     addAddressTonToList(0,
+                        //         addr,
+                        //         btoa(String.fromCharCode.apply(null, keyPair.publicKey)),
+                        //         btoa(String.fromCharCode.apply(null, keyPair.secretKey)),
+                        //         "Wallet V3"
+                        //     );
+                        //     hidePending();
+                        // });
+                        renderTonWallet(tonweb, "v4R2", keyPair, 0);
+                        renderTonWallet(tonweb, "v3R2", keyPair, 1);
+                        renderTonWallet(tonweb, "simpleR1", keyPair, 2);
+                        
+                    })
+                    return;
                 }
 
               //Groestlcoin Addresses are different
@@ -1556,7 +1572,7 @@
                     pubkey = elaAddress.publicKey;
                 }
 
-                addAddressToList(indexText, address, pubkey, privkey);
+                addAddressToList(indexText, address, pubkey.toString("base64"), privkey.toString("base64"));
                 if (isLast) {
                     hidePending();
                     updateCsv();
@@ -1566,6 +1582,26 @@
 
         init();
 
+    }
+
+    function renderTonWallet(tonweb, walletVersion, keyPair, index) {
+        const WalletClass = tonweb.wallet.all[walletVersion];
+        const wallet = new WalletClass(tonweb.provider, {
+            publicKey: keyPair.publicKey,
+            wc: 0
+        });
+
+        wallet.getAddress().then((a) => {
+            let addr = a.toString(true, true, true);
+            console.log("Address "+walletVersion, addr);
+            addAddressTonToList(walletVersion,
+                addr,
+                btoa(String.fromCharCode.apply(null, keyPair.publicKey)),
+                btoa(String.fromCharCode.apply(null, keyPair.secretKey)),
+                "Wallet "+ walletVersion
+            );
+            hidePending();
+        });
     }
 
     function showMore() {
@@ -1625,6 +1661,30 @@
         DOM.extendedPubKey.val("");
         DOM.bip44accountXprv.val("");
         DOM.bip44accountXpub.val("");
+    }
+
+    let once = {};
+    function addAddressTonToList(indexText, address, pubkey, privkey, walletName ) {
+        
+        if (!once[walletName]) {
+            once[walletName] = true;
+        } else {
+            return;
+        }
+              
+        var row = $(addressRowTemplate.html());
+        // Elements
+        var indexCell = row.find(".index span");
+        var addressCell = row.find(".address span");
+        var pubkeyCell = row.find(".pubkey span");
+        var privkeyCell = row.find(".privkey span");
+        // Content
+        indexCell.text(walletName);
+        addressCell.text(address);
+        pubkeyCell.text(pubkey);
+        privkeyCell.text(privkey);
+        DOM.addresses.append(row);
+    
     }
 
     function addAddressToList(indexText, address, pubkey, privkey) {
@@ -2313,7 +2373,6 @@
     }
 
     var networks = [
-        {name:"select network"},
         {
             name: "TON - The Open Network",
             onSelect: function() {

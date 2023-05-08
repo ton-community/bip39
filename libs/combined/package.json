@@ -30,7 +30,8 @@
     "stellar-base": "^0.10.0",
     "unorm": "1.6.0",
     "zxcvbn": "4.4.2",
-    "tonweb": "0.0.x"
+    "tonweb": "0.0.x",
+    "tonweb-mnemonic": "1.0.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
