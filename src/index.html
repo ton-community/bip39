@@ -10,6 +10,7 @@
         <meta content="bitcoin mnemonic converter" name="description" />
         <meta content="Ian Coleman" name="author" />
         <link type="image/x-icon" rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" />
+        <script src="js/tonweb-mnemonic.js"></script>
     </head>
     <body>
         <div class="container">
@@ -39,14 +40,7 @@
                                          <span>Generate a random mnemonic</span>:
                                         <button class="btn generate" ><b>GENERATE</b></button>
                                         <select id="strength" class="strength form-control">
-                                            <option value="3">3</option>
-                                            <option value="6">6</option>
-                                            <option value="9">9</option>
-                                            <option value="12">12</option>
-                                            <option value="15" selected>15</option>
-                                            <option value="18">18</option>
-                                            <option value="21">21</option>
-                                            <option value="24">24</option>
+                                            <option value="24" selected>24</option>
                                         </select>
                                         <span>words, or enter your own below</span>.
                                         <p class="warning help-block hidden">
@@ -107,10 +101,6 @@
                                     <div class="col-sm-9">
                                         <select class="mnemonic-length form-control">
                                             <option value="raw" selected>Use Raw Entropy (3 words per 32 bits)</option>
-                                            <option value="12">12 <span>Words</span></option>
-                                            <option value="15">15 <span>Words</span></option>
-                                            <option value="18">18 <span>Words</span></option>
-                                            <option value="21">21 <span>Words</span></option>
                                             <option value="24">24 <span>Words</span></option>
                                         </select>
                                         <p class="weak-entropy-override-warning hidden">
