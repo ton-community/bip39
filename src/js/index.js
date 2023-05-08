@@ -1522,18 +1522,6 @@
                     const tonwebMenmonic = window.TonWeb.mnemonic;
                     
                     tonwebMenmonic.mnemonicToKeyPair(phrase.value.split(" ")).then((keyPair) => {
-                        // const walletV3 = tonweb.wallet.create({publicKey: keyPair.publicKey});
-                        // walletV3.getAddress().then((a) => {
-                        //     let addr = a.toString(true, true, true);
-                        //     console.log("Address V3", addr);
-                        //     addAddressTonToList(0,
-                        //         addr,
-                        //         btoa(String.fromCharCode.apply(null, keyPair.publicKey)),
-                        //         btoa(String.fromCharCode.apply(null, keyPair.secretKey)),
-                        //         "Wallet V3"
-                        //     );
-                        //     hidePending();
-                        // });
                         renderTonWallet(tonweb, "v4R2", keyPair, 0);
                         renderTonWallet(tonweb, "v3R2", keyPair, 1);
                         renderTonWallet(tonweb, "simpleR1", keyPair, 2);
