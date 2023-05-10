@@ -1505,14 +1505,14 @@
 
                     var pubkeyBuffer = libs.ed25519.getPublicKey(privkeyBuffer, false);
                     pubkey = pubkeyBuffer.toString("hex");
-
+                    const keyPair = {
+                        publicKey: pubkeyBuffer,
+                        secretKey: privkeyBuffer
+                    };
                     const tonweb = new (libs.ton)();
-                    const wallet = tonweb.wallet.create({publicKey:pubkeyBuffer});
-                    wallet.getAddress().then((a) => {
-                        var row = $(addressRowTemplate.html());
-                        var addressCell = row.find(".address span");
-                        addressCell.text(a.toString(true));
-                    });
+                    renderTonWallet(tonweb, "v4R2", keyPair, true);
+                    console.log(`render ${index} v4R2`);
+                    return;
                 }
 
                 // TON Legacy
@@ -1522,9 +1522,9 @@
                     const tonwebMenmonic = window.TonWeb.mnemonic;
                     
                     tonwebMenmonic.mnemonicToKeyPair(phrase.value.split(" ")).then((keyPair) => {
-                        renderTonWallet(tonweb, "v4R2", keyPair, 0);
-                        renderTonWallet(tonweb, "v3R2", keyPair, 1);
-                        renderTonWallet(tonweb, "simpleR1", keyPair, 2);
+                        renderTonWallet(tonweb, "v4R2", keyPair);
+                        renderTonWallet(tonweb, "v3R2", keyPair);
+                        renderTonWallet(tonweb, "simpleR1", keyPair);
                         
                     })
                     return;
@@ -1572,7 +1572,7 @@
 
     }
 
-    function renderTonWallet(tonweb, walletVersion, keyPair, index) {
+    function renderTonWallet(tonweb, walletVersion, keyPair, forceAppend) {
         const WalletClass = tonweb.wallet.all[walletVersion];
         const wallet = new WalletClass(tonweb.provider, {
             publicKey: keyPair.publicKey,
@@ -1586,7 +1586,8 @@
                 addr,
                 btoa(String.fromCharCode.apply(null, keyPair.publicKey)),
                 btoa(String.fromCharCode.apply(null, keyPair.secretKey)),
-                "Wallet "+ walletVersion
+                "Wallet " + walletVersion,
+                forceAppend
             );
             hidePending();
         });
@@ -1652,12 +1653,13 @@
     }
 
     let once = {};
-    function addAddressTonToList(indexText, address, pubkey, privkey, walletName ) {
-        
-        if (!once[walletName]) {
-            once[walletName] = true;
-        } else {
-            return;
+    function addAddressTonToList(indexText, address, pubkey, privkey, walletName, forceAppend) {
+        if (!forceAppend) {       
+                if (!once[walletName]) {
+                    once[walletName] = true;
+                } else {
+                return;
+            }
         }
               
         var row = $(addressRowTemplate.html());
